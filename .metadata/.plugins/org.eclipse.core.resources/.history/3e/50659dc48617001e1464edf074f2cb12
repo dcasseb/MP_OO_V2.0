@@ -1,0 +1,213 @@
+package view.util;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import javax.swing.*;
+import model.util.Filial;
+import model.util.Patrimonio;
+import controller.util.Database;
+
+public class TelaFilial extends JFrame {
+    private Database database;
+    private JTextArea filialListArea; // Added list area
+
+    public TelaFilial(Database database) {
+        this.database = database;
+
+        setTitle("Tela de Filiais");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1920, 1080);
+
+        filialListArea = new JTextArea();
+        filialListArea.setEditable(false);
+        Font textAreaFont = new Font("Arial", Font.PLAIN, 16);
+        filialListArea.setFont(textAreaFont);
+        Color backgroundColor = new Color(255, 255, 255);
+        filialListArea.setBackground(backgroundColor);
+
+        BackgroundPanel backgroundPanel = new BackgroundPanel("Imagens/telaSecundaria.png");
+        backgroundPanel.setLayout(new BorderLayout());
+        getContentPane().add(backgroundPanel, BorderLayout.CENTER);
+
+        JButton backButton = new JButton();
+        backButton.setIcon(new ImageIcon("Imagens/iconeRetorno.png"));
+        backButton.setBorderPainted(false);
+        backButton.setContentAreaFilled(false);
+        backButton.setFocusPainted(false);
+        backButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                TelaPrincipal telaPrincipal = new TelaPrincipal();
+                telaPrincipal.setVisible(true);
+                dispose();
+            }
+        });
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(backButton);
+
+        backgroundPanel.add(buttonPanel, BorderLayout.NORTH);
+
+        JPanel centerPanel = new JPanel();
+        centerPanel.setOpaque(false);
+        centerPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+
+        JButton adicionarButton = createButton("Adicionar Filial", "Imagens/Adicionar_button.png", centerPanel);
+        JButton editarButton = createButton("Editar Filial", "Imagens/Editar_button.png", centerPanel);
+        JButton buscarButton = createButton("Buscar Filial", "Imagens/Buscar_button.png", centerPanel);
+        JButton excluirButton = createButton("Excluir Filial", "Imagens/Excluir_button.png", centerPanel);
+        JButton listarButton = createButton("Listar Filiais", "Imagens/Listar_button.png", centerPanel);
+
+        adicionarButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (database != null) {
+                    String endereco = JOptionPane.showInputDialog(TelaFilial.this, "Digite o endereço da filial:");
+                    if (endereco != null) {
+                        Filial novaFilial = new Filial();
+                        novaFilial.setEndereco(endereco);
+                        database.adicionarFilial(novaFilial);
+                        JOptionPane.showMessageDialog(TelaFilial.this, "Filial cadastrada com sucesso!");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(TelaFilial.this, "Erro ao adicionar a filial!");
+                }
+            }
+        });
+
+        editarButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (database != null) {
+                    String endereco = JOptionPane.showInputDialog(TelaFilial.this, "Digite o endereço da filial:");
+                    if (endereco != null) {
+                        Filial selectedFilial = database.buscarFilial(endereco);
+
+                        if (selectedFilial != null) {
+                            String novoEndereco = JOptionPane.showInputDialog(TelaFilial.this, "Digite o novo endereço da filial:", selectedFilial.getEndereco());
+                            if (novoEndereco != null) {
+                                selectedFilial.setEndereco(novoEndereco);
+                                database.atualizarFilial(selectedFilial);
+                                JOptionPane.showMessageDialog(TelaFilial.this, "Filial atualizada com sucesso!");
+                            } else {
+                                JOptionPane.showMessageDialog(TelaFilial.this, "Operação cancelada.");
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(TelaFilial.this, "Filial não encontrada.");
+                        }
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(TelaFilial.this, "Erro ao editar a filial!");
+                }
+            }
+        });
+
+        buscarButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (database != null) {
+                    String endereco = JOptionPane.showInputDialog(TelaFilial.this, "Digite o endereço da filial:");
+                    if (endereco != null) {
+                        Filial selectedFilial = database.buscarFilial(endereco);
+
+                        if (selectedFilial != null) {
+                            JOptionPane.showMessageDialog(TelaFilial.this, "Filial encontrada:\n\nEndereço: " + selectedFilial.getEndereco());
+                        } else {
+                            JOptionPane.showMessageDialog(TelaFilial.this, "Filial não encontrada.");
+                        }
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(TelaFilial.this, "Erro ao buscar a filial!");
+                }
+            }
+        });
+
+        excluirButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (database != null) {
+                    String endereco = JOptionPane.showInputDialog(TelaFilial.this, "Digite o endereço da filial:");
+                    if (endereco != null) {
+                        Filial selectedFilial = database.buscarFilial(endereco);
+
+                        if (selectedFilial != null) {
+                            int confirm = JOptionPane.showConfirmDialog(TelaFilial.this, "Deseja realmente excluir a filial?", "Confirmar exclusão", JOptionPane.YES_NO_OPTION);
+                            if (confirm == JOptionPane.YES_OPTION) {
+                                database.removerFilial(selectedFilial);
+                                JOptionPane.showMessageDialog(TelaFilial.this, "Filial excluída com sucesso!");
+                            } else {
+                                JOptionPane.showMessageDialog(TelaFilial.this, "Operação cancelada.");
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(TelaFilial.this, "Filial não encontrada.");
+                        }
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(TelaFilial.this, "Erro ao excluir a filial!");
+                }
+            }
+        });
+
+        listarButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (database != null) {
+                    ArrayList<Filial> filiais = database.getFiliais();
+
+                    if (!filiais.isEmpty()) {
+                        // Sort the list of filiais by endereco
+                        Collections.sort(filiais, Comparator.comparing(Filial::getEndereco));
+
+                        StringBuilder sb = new StringBuilder();
+                        for (Filial filial : filiais) {
+                            sb.append("Endereço: ").append(filial.getEndereco()).append("\n");
+                        }
+
+                        filialListArea.setText(sb.toString()); // Update the text in the list area
+                        JOptionPane.showMessageDialog(TelaFilial.this, new JScrollPane(filialListArea), "Lista de Filiais", JOptionPane.PLAIN_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(TelaFilial.this, "Não há filiais cadastradas.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(TelaFilial.this, "Erro ao listar as filiais!");
+                }
+            }
+        });
+
+        centerPanel.add(adicionarButton);
+        centerPanel.add(editarButton);
+        centerPanel.add(buscarButton);
+        centerPanel.add(excluirButton);
+        centerPanel.add(listarButton);
+
+        add(centerPanel, BorderLayout.CENTER);
+
+        // Set frame properties
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    class BackgroundPanel extends JPanel implements Serializable {
+        private static final long serialVersionUID = 1L;
+        private Image backgroundImage;
+
+        public BackgroundPanel(String imagePath) {
+            backgroundImage = new ImageIcon(imagePath).getImage();
+            this.setVisible(true);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            return new Dimension(1920, 1080);
+        }
+    }
+    
+}

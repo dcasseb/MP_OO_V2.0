@@ -1,0 +1,14 @@
+package main;
+
+import controller.util.Database;
+import view.util.TelaPrincipal;
+
+
+public class Main {
+    public static void main(String[] args) {
+        Database database = new Database();
+
+        TelaPrincipal telaPrincipal = new TelaPrincipal();
+        telaPrincipal.setVisible(true);
+    }
+}

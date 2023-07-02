@@ -1,0 +1,61 @@
+package view.util;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+public class TelaPrincipal extends JFrame {
+
+    public TelaPrincipal() {
+        setTitle("Exemplo de Imagem de Fundo");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1920, 1080);
+
+        // Cria o painel personalizado com imagem de fundo
+        BackgroundPanel backgroundPanel = new BackgroundPanel("/C:/Users/darau/OneDrive/Documentos/OO/TelaFundo.png/");
+        getContentPane().add(backgroundPanel, BorderLayout.CENTER);
+
+        ImageIcon buttonIcon = new ImageIcon("/C:/Users/darau/OneDrive/Documentos/OO/iconeMenu.png/");
+        JButton imageButton = new JButton(buttonIcon);
+        imageButton.setBounds(1880, 45, buttonIcon.getIconWidth(), buttonIcon.getIconHeight());
+        imageButton.setBorderPainted(false);
+        imageButton.setContentAreaFilled(false);
+        imageButton.setFocusPainted(false);
+        imageButton.setOpaque(false);
+        // Adiciona o botão ao painel de fundo
+        backgroundPanel.add(imageButton);
+    }
+
+    public static void main(String[] args) {
+        TelaPrincipal example = new TelaPrincipal();
+        example.setVisible(true);
+    }
+
+    // Classe interna para o painel personalizado com a imagem de fundo
+    class BackgroundPanel extends JPanel {
+        private Image backgroundImage;
+
+        public BackgroundPanel(String imagePath) {
+            // Carrega a imagem de fundo
+            backgroundImage = new ImageIcon(imagePath).getImage();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            // Desenha a imagem de fundo
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            return new Dimension(1920, 1080); // Define o tamanho preferencial do painel
+        }
+    }
+}

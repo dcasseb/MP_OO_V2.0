@@ -1,0 +1,54 @@
+package model.util;
+
+import java.util.ArrayList;
+
+public class Escritorio {
+    private static ArrayList<Filial> filiais;
+
+    public Escritorio(ArrayList<Filial> filiais) {
+        Escritorio.filiais = filiais;
+    }
+
+    public static ArrayList<Filial> getFiliais() {
+        return filiais;
+    }
+
+    public static void setFiliais(ArrayList<Filial> filiais) {
+        Escritorio.filiais = filiais;
+    }
+
+    public static void adicionarFilial(Filial filial) {
+        if (filiais != null) {
+            filiais.add(filial);
+        }
+    }
+
+    public static void editarFilial(String enderecoAtual, String novoEndereco) {
+        if (filiais != null) {
+            for (Filial filial : filiais) {
+                if (filial.getEndereco().equals(enderecoAtual)) {
+                    filial.setEndereco(novoEndereco);
+                    break;
+                }
+            }
+        }
+    }
+
+    public static void excluirFilial(String endereco) {
+        if (filiais != null) {
+            for (Filial filial : filiais) {
+                if (filial.getEndereco().equals(endereco)) {
+                    filiais.remove(filial);
+                    break;
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public String toString() {
+        return "Escritorio [getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()="
+                + super.toString() + "]";
+    }
+}

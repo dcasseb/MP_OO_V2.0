@@ -1,0 +1,222 @@
+package view.util;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import javax.swing.*;
+
+import model.util.Escritorio;
+import model.util.Filial;
+import model.util.Imovel;
+import model.util.Movel;
+import model.util.Patrimonio;
+import view.util.TelaPatrimonio.BackgroundPanel;
+import controller.util.Database;
+
+public class TelaFilial extends JFrame {
+    private Database database;
+    private JTextArea filialListArea; // Added list area
+    private TelaPatrimonio telaPatrimonio;
+
+    public TelaFilial(Database database, TelaPatrimonio telaPatrimonio) {
+    	final ArrayList<Filial> filiais = new ArrayList<>();
+        this.database = database;
+        this.telaPatrimonio = telaPatrimonio; // Atribua a instância da tela de patrimônios
+
+        setTitle("Tela de Filiais");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1920, 1080);
+
+        JTextArea filialListArea = new JTextArea();
+        filialListArea.setEditable(false); // To make it read-only
+        Font textAreaFont = new Font("Arial", Font.BOLD, 16);
+        filialListArea.setFont(textAreaFont);
+        Color backgroundColor = new Color(255, 255, 255);
+        filialListArea.setBackground(backgroundColor);
+
+        // Cria o painel de fundo customizado com o layout BorderLayout
+        BackgroundPanel backgroundPanel = new BackgroundPanel("Imagens/telaSecundaria.png");
+        backgroundPanel.setLayout(new BorderLayout());
+        getContentPane().add(backgroundPanel, BorderLayout.CENTER);
+
+        // Cria um botao para retornar a TelaPrincipal
+        JButton backButton = new JButton();
+        backButton.setIcon(new ImageIcon("Imagens/iconeRetorno.png"));
+        backButton.setBorderPainted(false);
+        backButton.setContentAreaFilled(false);
+        backButton.setFocusPainted(false);
+        backButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                TelaPrincipal telaPrincipal = new TelaPrincipal();
+                telaPrincipal.setVisible(true);
+                dispose(); // Fecha a tela atual (TelaPatrimonio)
+            }
+        });
+
+        // Cria um painel para o botao no canto superior direito
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(backButton);
+
+        JPanel patrimonioPanel = new JPanel(new BorderLayout());
+        patrimonioPanel.setBackground(Color.BLACK);
+        patrimonioPanel.add(filialListArea, BorderLayout.CENTER);
+
+        JScrollPane scrollPane = new JScrollPane(patrimonioPanel);
+        scrollPane.setPreferredSize(new Dimension(400, 200));
+
+        //Adiciona o painel de botoes ao painel de fundo
+        backgroundPanel.add(buttonPanel, BorderLayout.NORTH);
+
+        // Cria os botoes de opcoes
+        JButton adicionarButton = new JButton(new ImageIcon("Imagens/Adicionar_button.png"));
+        JButton editarButton = new JButton(new ImageIcon("Imagens/Editar_button.png"));
+        JButton buscarButton = new JButton(new ImageIcon("Imagens/Buscar_button.png"));
+        JButton removerButton = new JButton(new ImageIcon("Imagens/Excluir_button.png"));
+        JButton listarButton = new JButton(new ImageIcon("Imagens/Listar_button.png"));
+
+        // Define o tamanho dos botoes
+        adicionarButton.setPreferredSize(new Dimension(200, 60));
+        editarButton.setPreferredSize(new Dimension(200, 60));
+        buscarButton.setPreferredSize(new Dimension(200, 60));
+        removerButton.setPreferredSize(new Dimension(200, 60));
+        listarButton.setPreferredSize(new Dimension(200, 60));
+
+        ActionListener buttonListener = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == adicionarButton) {
+                    System.out.println("Opção selecionada: Adicionar");
+
+                    // Pede o endereço e CNPJ da filial
+                    String endereco = JOptionPane.showInputDialog("Digite o endereço da filial:");
+                    String cnpj = JOptionPane.showInputDialog("Digite o CNPJ da filial:");
+
+                    // Cria uma nova filial e adiciona à lista de filiais
+                    Filial novaFilial = new Filial(endereco, cnpj);
+                    filiais.add(novaFilial);
+
+                } else if (e.getSource() == editarButton) {
+                    System.out.println("Opção selecionada: Editar");
+
+                    // Pede o CNPJ da filial a ser editada
+                    String cnpjAtual = JOptionPane.showInputDialog("Digite o CNPJ atual da filial:");
+                    String novoEndereco = JOptionPane.showInputDialog("Digite o novo endereço da filial:");
+
+                    for (Filial filial : filiais) {
+                        if (String.valueOf(filial.getCnpj()).equalsIgnoreCase(cnpjAtual)) {
+                            filial.setEndereco(novoEndereco);
+                            break;
+                        }
+                    }
+
+                } else if (e.getSource() == buscarButton) {
+                    System.out.println("Opção selecionada: Buscar");
+                    String searchCnpj = JOptionPane.showInputDialog("Digite o CNPJ da filial a ser buscada:");
+
+                    for (Filial filial : filiais) {
+                        if (String.valueOf(filial.getCnpj()).equalsIgnoreCase(searchCnpj)) {
+                            JOptionPane.showMessageDialog(null,
+                                    "Filial encontrada:\n" +
+                                    "Endereço: " + filial.getEndereco() + "\n" +
+                                    "CNPJ: " + filial.getCnpj());
+                            break;
+                        }
+                    }
+
+                } else if (e.getSource() == removerButton) {
+                    System.out.println("Opção selecionada: Remover");
+                    String cnpj = JOptionPane.showInputDialog("Digite o CNPJ da filial a ser removida:");
+
+                    for (Filial filial : filiais) {
+                        if (String.valueOf(filial.getCnpj()).equalsIgnoreCase(cnpj)) {
+                            filiais.remove(filial);
+                            break;
+                        }
+                    }
+
+                } else if (e.getSource() == listarButton) {
+                    StringBuilder filialList = new StringBuilder();
+
+                    for (Filial filial : filiais) {
+                        filialList.append("Endereço: ").append(filial.getEndereco()).append("\n");
+                        filialList.append("CNPJ: ").append(filial.getCnpj()).append("\n");
+                        filialList.append("\n");
+                    }
+
+                    if (filiais.isEmpty()) {
+                        filialList.append("Nenhuma filial cadastrada.");
+                    }
+
+                    filialListArea.setText(filialList.toString());
+                }
+            }
+        };
+
+
+
+        adicionarButton.addActionListener(buttonListener);
+        editarButton.addActionListener(buttonListener);
+        buscarButton.addActionListener(buttonListener);
+        removerButton.addActionListener(buttonListener);
+        listarButton.addActionListener(buttonListener);
+
+        // Centraliza os botoes no painel de fundo
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setOpaque(false);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        centerPanel.add(adicionarButton, gbc);
+
+        gbc.gridx = 1;
+        centerPanel.add(editarButton, gbc);
+
+        gbc.gridx = 2;
+        centerPanel.add(buscarButton, gbc);
+
+        gbc.gridx = 3;
+        centerPanel.add(removerButton, gbc);
+
+        gbc.gridx = 4;
+        centerPanel.add(listarButton, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 5;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 10, 10, 10);
+        centerPanel.add(scrollPane, gbc);
+
+        // Adiciona o painel central ao painel de fundo
+        backgroundPanel.add(centerPanel, BorderLayout.CENTER);
+
+    }
+
+    class BackgroundPanel extends JPanel implements Serializable {
+        private static final long serialVersionUID = 1L;
+        private Image backgroundImage;
+
+        public BackgroundPanel(String imagePath) {
+            backgroundImage = new ImageIcon(imagePath).getImage();
+            this.setVisible(true);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            return new Dimension(1920, 1080);
+        }
+    }
+    
+}

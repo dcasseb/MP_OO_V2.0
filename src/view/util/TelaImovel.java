@@ -1,0 +1,26 @@
+package view.util;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+public class TelaImovel {
+
+	public static void main(String[] args) {
+
+		JPanel panel = new JPanel();
+		JFrame frame = new JFrame();
+		frame.setSize(800, 600);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.add(panel);
+		
+		panel.setLayout(null);
+		
+		JLabel label = new JLabel("Tela Imovel");
+		label.setBounds(10, 20, 80, 25);
+		panel.add(label);
+		
+		frame.setVisible(true);
+	}
+
+}

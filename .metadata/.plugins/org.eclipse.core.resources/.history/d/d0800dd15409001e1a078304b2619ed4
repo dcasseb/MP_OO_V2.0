@@ -1,0 +1,10 @@
+package view.util;
+
+public class TelaImovel {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

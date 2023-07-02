@@ -1,0 +1,60 @@
+package view.util;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class TelaFilial extends JFrame {
+
+    public TelaFilial() {
+        setTitle("Tela de Filiais");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1920, 1080);
+
+        // Cria o painel personalizado com imagem de fundo e layout BorderLayout
+        BackgroundPanel backgroundPanel = new BackgroundPanel("/C:/Users/darau/OneDrive/Documentos/OO/telaSecundaria.png/");
+        backgroundPanel.setLayout(new BorderLayout());
+        getContentPane().add(backgroundPanel, BorderLayout.CENTER);
+
+        // Cria um botão para voltar à TelaPrincipal
+        ImageIcon buttonIcon = new ImageIcon("/C:/Users/darau/OneDrive/Documentos/OO/iconeRetorno.png/");
+        JButton backButton = new JButton();
+        backButton.setBounds(1880, 45, buttonIcon.getIconWidth(), buttonIcon.getIconHeight());
+        backButton.setBorderPainted(false);
+        backButton.setContentAreaFilled(false);
+        backButton.setFocusPainted(false);
+        backButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                TelaPrincipal telaPrincipal = new TelaPrincipal();
+                telaPrincipal.setVisible(true);
+                dispose(); // Fecha a tela atual (TelaFilial)
+            }
+        });
+
+        // Adiciona o botão ao canto superior direito do painel
+        backgroundPanel.add(backButton, BorderLayout.NORTH);
+    }
+
+    // Classe interna para o painel personalizado com a imagem de fundo
+    class BackgroundPanel extends JPanel {
+        private Image backgroundImage;
+
+        public BackgroundPanel(String imagePath) {
+            // Carrega a imagem de fundo
+            backgroundImage = new ImageIcon(imagePath).getImage();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            // Desenha a imagem de fundo
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            return new Dimension(1920, 1080); // Define o tamanho preferencial do painel
+        }
+    }
+}

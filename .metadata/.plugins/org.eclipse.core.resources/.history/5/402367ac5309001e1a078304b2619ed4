@@ -1,0 +1,34 @@
+package view.util;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class TelaPrincipal extends JFrame {
+    public TelaPrincipal() {
+        setTitle("Inventory Management System");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        // Painel para exibir as classes Escritorio, Filial, Patrimonio, Item, Movel e Imovel
+        JPanel classPanel = new JPanel(new GridLayout(2, 3));
+
+        // Adicionando as classes Escritorio, Filial, Patrimonio, Item, Movel e Imovel como rótulos
+        classPanel.add(new JLabel("Escritorio"));
+        classPanel.add(new JLabel("Filial"));
+        classPanel.add(new JLabel("Patrimonio"));
+        classPanel.add(new JLabel("Item"));
+        classPanel.add(new JLabel("Movel"));
+        classPanel.add(new JLabel("Imovel"));
+
+        add(classPanel, BorderLayout.CENTER);
+
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new TelaPrincipal());
+    }
+}
+

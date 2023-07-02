@@ -1,0 +1,66 @@
+package model.util;
+
+import java.util.ArrayList;
+
+public class Patrimonio {
+    private String nome;
+    private double valor;
+    private ArrayList<Patrimonio> patrimonios; // Referencia a ArrayList
+
+    public Patrimonio(String nome, double valor) {
+        this.nome = nome;
+        this.valor = valor;
+    }
+
+    public Patrimonio(String nome) {
+        this.nome = nome;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public double getValor() {
+        return valor;
+    }
+
+    public void setValor(double valor) {
+        this.valor = valor;
+    }
+
+    @Override
+    public String toString() {
+        return "Patrimonio [nome = " + nome + ", valor = " + valor + "]";
+    }
+
+    public void removePatrimonio() {
+        if (patrimonios != null) {
+            patrimonios.remove(this);
+        }
+    }
+
+    public void addPatrimonio() {
+        if (patrimonios != null) {
+            patrimonios.add(this);
+        }
+    }
+
+    public ArrayList<Patrimonio> getPatrimonios() {
+        return patrimonios;
+    }
+
+    public void setPatrimonios(ArrayList<Patrimonio> patrimonios) {
+        this.patrimonios = patrimonios;
+    }
+
+    public Filial getFilial() {
+        if (patrimonios != null && !patrimonios.isEmpty()) {
+            return patrimonios.get(0).getFilial();
+        }
+        return null;
+    }
+}

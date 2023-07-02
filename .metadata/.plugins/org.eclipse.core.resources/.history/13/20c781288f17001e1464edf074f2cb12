@@ -1,0 +1,90 @@
+package model.util;
+
+import java.util.ArrayList;
+
+public class Escritorio {
+    private static ArrayList<Filial> filiais;
+    private static String endereco;
+
+    public Escritorio(ArrayList<Filial> filiais) {
+        if (filiais != null && !filiais.isEmpty()) {
+            Escritorio.filiais = filiais;
+        } else {
+            Escritorio.filiais = new ArrayList<>();
+            Filial matriz = new Filial();
+            Escritorio.filiais.add(matriz);
+        }
+    }
+    
+    public Escritorio(String endereco) {
+    	Escritorio.endereco = endereco;
+    }
+
+    public static ArrayList<Filial> getFiliais() {
+        return filiais;
+    }
+    
+    public void setFiliais(ArrayList<Filial> filiais) {
+    	Escritorio.filiais = filiais;
+    }
+
+    public static void adicionarFilial(String endereco, int cnpj) {
+        if (filiais != null) {
+            Filial filial = new Filial(endereco, cnpj, null, null);
+            filiais.add(filial);
+        }
+    }
+
+    public static void adicionarFilial(Filial filial) {
+        if (filiais != null) {
+            filiais.add(filial);
+        }
+    }
+
+    public static void editarFilial(String enderecoAtual, String novoEndereco) {
+        if (filiais != null) {
+            for (Filial filial : filiais) {
+                if (filial.getEndereco().equals(enderecoAtual)) {
+                    filial.setEndereco(novoEndereco);
+                    break;
+                }
+            }
+        }
+    }
+
+    public static void excluirFilial(Filial filial) {
+        if (filiais != null) {
+            for (Filial excluirFilial : filiais) {
+                if (filial.getEndereco().equals(endereco)) {
+                    filiais.remove(filial);
+                    break;
+                }
+            }
+        }
+    }
+    
+    public static void listarPatrimoniosMatriz() {
+        if (filiais != null) {
+            for (Filial filial : filiais) {
+                if (filial.getEndereco().equals("Matriz")) {
+                    System.out.println("Patrimônios da Matriz:");
+                    ArrayList<Patrimonio> patrimonios = filial.getPatrimonio();
+                    if (patrimonios != null) {
+                        for (Patrimonio patrimonio : patrimonios) {
+                            System.out.println(patrimonio);
+                        }
+                    } else {
+                        System.out.println("Não há patrimônios cadastrados para a Matriz.");
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Escritorio [getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()="
+                + super.toString() + "]";
+    }
+}

@@ -1,0 +1,43 @@
+package model.util;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Patrimonio {
+	private String nome;
+	private int codigo;
+	
+	public Patrimonio(String nome, int codigo) {
+		super();
+		this.nome = nome;
+		this.codigo = codigo;
+	}
+	public Patrimonio(String nome2) {
+		this.nome = nome2;
+	}
+	public Patrimonio() {
+		// TODO Auto-generated constructor stub
+	}
+	public String getNome() {
+		return nome;
+	}
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+	public int getCodigo() {
+		return codigo;
+	}
+	public void setCodigo(int codigo) {
+		this.codigo = codigo;
+	}
+	@Override
+	public String toString() {
+		return "Patrimonio [nome = " + nome + ", codigo = " + codigo + "]";
+	}
+	public void removePatrimonio(ArrayList<Patrimonio> patrimonios, Patrimonio patrimonio) {
+        patrimonios.remove(patrimonio);
+    }
+	public void addPatrimonio(ArrayList<Patrimonio> patrimonios, Patrimonio patrimonio) {
+        patrimonios.add(patrimonio);
+    }
+}

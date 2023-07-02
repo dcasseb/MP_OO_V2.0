@@ -1,0 +1,50 @@
+package view.util;
+
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+public class TelaPrincipal extends JFrame {
+    private Image backgroundImage;
+
+    public TelaPrincipal() {
+        setTitle("Exemplo de Imagem de Fundo");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1640, 924);
+
+        // Carrega a imagem de fundo
+        backgroundImage = new ImageIcon("/C:/Users/darau/OneDrive/Documentos/OO/TelaFundo.png/").getImage();
+
+        // Cria o painel personalizado com imagem de fundo
+        BackgroundPanel backgroundPanel = new BackgroundPanel();
+        getContentPane().add(backgroundPanel);
+
+        // Define o layout desejado e adiciona outros componentes ao painel
+        // backgroundPanel.setLayout(...);
+        // backgroundPanel.add(...);
+    }
+
+    public static void main(String[] args) {
+        TelaPrincipal example = new TelaPrincipal();
+        example.setVisible(true);
+    }
+
+    // Classe interna para o painel personalizado com a imagem de fundo
+    class BackgroundPanel extends JPanel {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            // Desenha a imagem de fundo
+            g.drawImage(backgroundImage, 0, 0, null);
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            return new Dimension(1920, 1080); // Define o tamanho preferencial do painel
+        }
+    }
+}

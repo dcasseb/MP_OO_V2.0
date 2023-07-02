@@ -1,0 +1,198 @@
+package view.util;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import javax.swing.*;
+import model.util.Filial;
+import model.util.Imovel;
+import model.util.Movel;
+import model.util.Patrimonio;
+
+public class TelaEscritorio extends JFrame {
+    
+    public TelaEscritorio() {
+        setTitle("Tela da Matriz");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1920, 1080);
+        
+        // Create a Filial object
+        Filial filial = new Filial();
+
+        // Create the custom background panel with BorderLayout layout
+        BackgroundPanel backgroundPanel = new BackgroundPanel("Imagens/telaSecundaria.png");
+        backgroundPanel.setLayout(new BorderLayout());
+        getContentPane().add(backgroundPanel, BorderLayout.CENTER);
+
+        // Create a button to go back to TelaPrincipal
+        JButton backButton = new JButton();
+        backButton.setIcon(new ImageIcon("Imagens/iconeRetorno.png"));
+        backButton.setBorderPainted(false);
+        backButton.setContentAreaFilled(false);
+        backButton.setFocusPainted(false);
+        backButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                TelaPrincipal telaPrincipal = new TelaPrincipal();
+                telaPrincipal.setVisible(true);
+                dispose(); // Close the current screen (TelaPatrimonio)
+            }
+        });
+
+        // Create a panel for the button in the top right corner
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(backButton);
+
+        // Add the button panel to the background panel
+        backgroundPanel.add(buttonPanel, BorderLayout.NORTH);
+
+        // Create the option buttons
+        JButton adicionarButton = new JButton(new ImageIcon("Imagens/Adicionar_button.png"));
+        JButton editarButton = new JButton(new ImageIcon("Imagens/Editar_button.png"));
+        JButton removerButton = new JButton(new ImageIcon("Imagens/Excluir_button.png"));
+        JButton listarButton = new JButton(new ImageIcon("Imagens/Listar_button.png"));
+
+        // Set the preferred size of the buttons
+        adicionarButton.setPreferredSize(new Dimension(200, 60));
+        editarButton.setPreferredSize(new Dimension(200, 60));
+        removerButton.setPreferredSize(new Dimension(200, 60));
+        listarButton.setPreferredSize(new Dimension(200, 60));
+
+        ActionListener buttonListener = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == adicionarButton) {
+                    System.out.println("Opção selecionada: Adicionar");
+                    // Ask if the item is Movel or Imovel
+                    String[] options = { "Movel", "Imovel" };
+                    int selectedOption = JOptionPane.showOptionDialog(null, "Selecione o tipo de patrimônio:",
+                            "Adicionar Patrimônio", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+                            options, options[0]);
+
+                    if (selectedOption == 0) {
+                        // If Movel, ask for input of nome, valor, peso, cor, dimensao, and tipo
+                        String novoNome = JOptionPane.showInputDialog("Digite o nome do patrimônio:");
+                        int novoCodigo = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do patrimônio:"));
+                        double novoValor = Double.parseDouble(JOptionPane.showInputDialog("Digite o valor do patrimônio:"));
+                        int novoPeso = Integer.parseInt(JOptionPane.showInputDialog("Digite o peso do patrimônio:"));
+                        String novaCor = JOptionPane.showInputDialog("Digite a cor do patrimônio:");
+                        int novaDimensao = Integer.parseInt(JOptionPane.showInputDialog("Digite a dimensão do patrimônio:"));
+                        String novoTipo = JOptionPane.showInputDialog("Digite o tipo do patrimônio:");
+
+                        // Create a new Movel object and add it to the Filial
+                        Movel novoMovel = new Movel(novoNome, novoCodigo, novoValor, novoPeso, novaCor, novaDimensao, novoTipo);
+                        filial.adicionarPatrimonio(novoMovel);
+                    } else if (selectedOption == 1) {
+                        // If Imovel, ask for input of nome, cep, codigo, tamanho, and valor
+                        String novoNome = JOptionPane.showInputDialog("Digite o nome do patrimônio:");
+                        int novoCEP = Integer.parseInt(JOptionPane.showInputDialog("Digite o CEP do patrimônio:"));
+                        int novoCodigo = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do patrimônio:"));
+                        double novoTamanho = Double.parseDouble(JOptionPane.showInputDialog("Digite o tamanho do patrimônio:"));
+                        double novoValor = Double.parseDouble(JOptionPane.showInputDialog("Digite o valor do patrimônio:"));
+
+                        // Create a new Imovel object and add it to the Filial
+                        Imovel novoImovel = new Imovel(novoNome, novoCEP, novoCodigo, novoTamanho, novoValor);
+                        filial.adicionarPatrimonio(novoImovel);
+                    }
+                } else if (e.getSource() == editarButton) {
+                    System.out.println("Opção selecionada: Editar");
+                    // Allow the user to rename an item from the ArrayList<Patrimonio> in class Filial
+                    String nomeAtual = JOptionPane.showInputDialog("Digite o nome atual do patrimônio:");
+                    String novoNome = JOptionPane.showInputDialog("Digite o novo nome do patrimônio:");
+                    filial.editarPatrimonio(nomeAtual, novoNome);
+                } else if (e.getSource() == removerButton) {
+                    System.out.println("Opção selecionada: Remover");
+                    // Allow the user to delete an item from the ArrayList<Patrimonio> in class Filial
+                    String nome = JOptionPane.showInputDialog("Digite o nome do patrimônio a ser removido:");
+                    filial.excluirPatrimonio(nome);
+                } else if (e.getSource() == listarButton) {
+                    // Clear the text area
+                    patrimonioListArea.setText("");
+
+                    // Get the list of items from the Filial class
+                    ArrayList<Patrimonio> patrimonios = filial.getPatrimonio();
+
+                    // Check if there are items in the list
+                    if (patrimonios.isEmpty()) {
+                        patrimonioListArea.setText("Nenhum patrimônio cadastrado.");
+                    } else {
+                        // Display the list of items in the text area
+                        for (Patrimonio patrimonio : patrimonios) {
+                            if (patrimonio instanceof Movel) {
+                                Movel movel = (Movel) patrimonio;
+                                patrimonioListArea.append("Nome: " + movel.getNome() + "\n");
+                                patrimonioListArea.append("Código: " + movel.getCodigo() + "\n");
+                                patrimonioListArea.append("Valor: R$" + movel.getValor() + "\n");
+                                patrimonioListArea.append("Peso: " + movel.getPeso() + "Kg\n");
+                                patrimonioListArea.append("Cor: " + movel.getCor() + "\n");
+                                patrimonioListArea.append("Dimensão: " + movel.getDimensao() + "m3\n");
+                                patrimonioListArea.append("Tipo: " + movel.getTipo() + "\n");
+                                patrimonioListArea.append("\n");
+                            } else if (patrimonio instanceof Imovel) {
+                                Imovel imovel = (Imovel) patrimonio;
+                                patrimonioListArea.append("Nome: " + imovel.getNome() + "\n");
+                                patrimonioListArea.append("CEP: " + imovel.getCep() + "\n");
+                                patrimonioListArea.append("Tamanho: " + imovel.getTamanho() + "m2\n");
+                                patrimonioListArea.append("Valor: R$" + imovel.getValor() + "\n");
+                                patrimonioListArea.append("\n");
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        adicionarButton.addActionListener(buttonListener);
+        editarButton.addActionListener(buttonListener);
+        removerButton.addActionListener(buttonListener);
+        listarButton.addActionListener(buttonListener);
+
+        // Center the buttons on the background panel
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setOpaque(false);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        centerPanel.add(adicionarButton, gbc);
+
+        gbc.gridx = 1;
+        centerPanel.add(editarButton, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        centerPanel.add(removerButton, gbc);
+
+        gbc.gridx = 1;
+        centerPanel.add(listarButton, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 10, 10, 10);
+        centerPanel.add(scrollPane, gbc);
+
+        // Add the center panel to the background panel
+        backgroundPanel.add(centerPanel, BorderLayout.CENTER);
+
+    }
+
+    // Inner class for the custom panel with the background image
+    class BackgroundPanel extends JPanel {
+        private Image backgroundImage;
+
+        public BackgroundPanel(String imagePath) {
+            // Load the background image
+            backgroundImage = new ImageIcon(imagePath).getImage();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            // Draw the background image
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
+    }
+}

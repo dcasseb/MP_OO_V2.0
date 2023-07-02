@@ -1,0 +1,21 @@
+package main;
+
+import controller.util.Database;
+import model.util.Filial;
+import model.util.Patrimonio;
+import view.util.TelaFilial;
+
+public class Main {
+    public static void main(String[] args) {
+        Database database = new Database();
+
+        Filial filial = new Filial("Filial 1", 0, null, database);
+        Patrimonio patrimonio1 = new Patrimonio("Patrimônio 1", 1000.0, filial);
+        Patrimonio patrimonio2 = new Patrimonio("Patrimônio 2", 2000.0, filial);
+        database.adicionarPatrimonio(patrimonio1);
+        database.adicionarPatrimonio(patrimonio2);
+
+        TelaFilial telaFilial = new TelaFilial(database);
+        telaFilial.setVisible(true);
+    }
+}

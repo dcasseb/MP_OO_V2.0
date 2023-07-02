@@ -1,0 +1,35 @@
+package view.util;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+public class TelaPrincipal extends JFrame {
+
+    public TelaPrincipal() {
+        setTitle("Exemplo de Imagem em Tela Cheia");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1920, 1080);
+        
+        // Carrega a imagem
+        ImageIcon imageIcon = new ImageIcon("/C:/Users/darau/OneDrive/Documentos/OO/TelaFundo.png/");
+        
+        // Cria um JLabel com a imagem
+        JLabel imageLabel = new JLabel(imageIcon);
+        
+        // Define o layout como null para permitir o posicionamento absoluto
+        getContentPane().setLayout(null);
+        
+        // Posiciona o JLabel em (0, 0) para preencher toda a tela
+        imageLabel.setBounds(0, 0, getWidth(), getHeight());
+        
+        // Adiciona o JLabel à tela
+        getContentPane().add(imageLabel);
+    }
+
+    public static void main(String[] args) {
+        TelaPrincipal example = new TelaPrincipal();
+        example.setVisible(true);
+    }
+}
+

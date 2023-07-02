@@ -1,0 +1,146 @@
+package view.util;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+
+import javax.swing.*;
+
+import model.util.Escritorio;
+import model.util.Filial;
+import model.util.Patrimonio;
+import view.util.TelaPatrimonio.BackgroundPanel;
+import controller.util.Controller;
+
+public class TelaFilial extends JFrame {
+	
+	private Filial filial;
+	private Controller controller;
+
+    public TelaFilial() {
+        setTitle("Tela de Filiais");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1920, 1080);
+
+     // Cria o painel personalizado com imagem de fundo e layout BorderLayout
+        BackgroundPanel backgroundPanel = new BackgroundPanel("/C:/Users/darau/OneDrive/Documentos/OO/telaSecundaria.png/");
+        backgroundPanel.setLayout(new BorderLayout());
+        getContentPane().add(backgroundPanel, BorderLayout.CENTER);
+
+        // Cria um botão para voltar à TelaPrincipal
+        JButton backButton = new JButton();
+        backButton.setIcon(new ImageIcon("/C:/Users/darau/OneDrive/Documentos/OO/iconeRetorno.png/"));
+        backButton.setBorderPainted(false);
+        backButton.setContentAreaFilled(false);
+        backButton.setFocusPainted(false);
+        backButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                TelaPrincipal telaPrincipal = new TelaPrincipal();
+                telaPrincipal.setVisible(true);
+                dispose(); // Fecha a tela atual (TelaPatrimonio)
+            }
+        });
+
+        // Cria um painel para o botão no canto superior direito
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(backButton);
+
+        // Adiciona o painel de botão ao painel de fundo
+        backgroundPanel.add(buttonPanel, BorderLayout.NORTH);
+
+     // Cria a caixa de seleção
+        JComboBox<String> comboBox = new JComboBox<>(new String[] {
+        		"Adicionar Patrimônio", "Editar Patrimônio", "Buscar Patrimônio", "Excluir Patrimônio"
+        });
+        
+        comboBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String escolha = (String) comboBox.getSelectedItem();
+                if (escolha.equals("Adicionar Patrimônio")) {
+                    JTextField nomeTextField = new JTextField();
+                    nomeTextField.setPreferredSize(new Dimension(200, 30));
+                    int option = JOptionPane.showOptionDialog(null, nomeTextField, "Digite o nome do patrimônio",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+                    if (option == JOptionPane.OK_OPTION) {
+                        
+                    }
+                } else if (escolha.equals("Editar Patrimônio")) {
+                    String[] nomesPatrimonios = filial.getNomesPatrimonios();
+                    JComboBox<String> patrimoniosComboBox = new JComboBox<>(nomesPatrimonios);
+                    patrimoniosComboBox.setPreferredSize(new Dimension(200, 30));
+                    int option = JOptionPane.showOptionDialog(null, patrimoniosComboBox, "Selecione o patrimônio",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+                    if (option == JOptionPane.OK_OPTION) {
+                        String nomeSelecionado = (String) patrimoniosComboBox.getSelectedItem();
+                        JTextField nomeTextField = new JTextField(nomeSelecionado);
+                        nomeTextField.setPreferredSize(new Dimension(200, 30));
+                        option = JOptionPane.showOptionDialog(null, nomeTextField, "Digite o novo nome do patrimônio",
+                                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+                        if (option == JOptionPane.OK_OPTION) {
+                            String novoNome = nomeTextField.getText();
+                            filial.editarPatrimonio(nomeSelecionado, novoNome);
+                        }
+                    }
+                } else if (escolha.equals("Buscar Patrimônio")) {
+                    String[] nomesPatrimonios = filial.getNomesPatrimonios();
+                    JComboBox<String> patrimoniosComboBox = new JComboBox<>(nomesPatrimonios);
+                    patrimoniosComboBox.setPreferredSize(new Dimension(200, 30));
+                    int option = JOptionPane.showOptionDialog(null, patrimoniosComboBox, "Selecione o patrimônio",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+                    if (option == JOptionPane.OK_OPTION) {
+                        String nomeSelecionado = (String) patrimoniosComboBox.getSelectedItem();
+                        Patrimonio patrimonio = filial.buscarPatrimonio(nomeSelecionado);
+                        JOptionPane.showMessageDialog(null, "Nome: " + patrimonio.getNome());
+                    }
+                    
+                } else if (escolha.equals("Excluir Patrimônio")) {
+                    String[] nomesPatrimonios = filial.getNomesPatrimonios();
+                    JComboBox<String> patrimoniosComboBox = new JComboBox<>(nomesPatrimonios);
+                    patrimoniosComboBox.setPreferredSize(new Dimension(200, 30));
+                    int option = JOptionPane.showOptionDialog(null, patrimoniosComboBox, "Selecione o patrimônio",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+                    
+                    if (option == JOptionPane.OK_OPTION) {
+                        String nomeSelecionado = (String) patrimoniosComboBox.getSelectedItem();
+                        filial.excluirPatrimonio(nomeSelecionado);
+                    }
+                }
+            }
+        });
+
+
+        // Centraliza as caixas de opção no painel de fundo
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setOpaque(false);
+        centerPanel.add(comboBox);
+
+        // Adiciona o painel central ao painel de fundo
+        backgroundPanel.add(centerPanel, BorderLayout.CENTER);
+        
+    }
+
+    // Classe interna para o painel personalizado com a imagem de fundo
+    class BackgroundPanel extends JPanel {
+        private Image backgroundImage;
+
+        public BackgroundPanel(String imagePath) {
+            // Carrega a imagem de fundo
+            backgroundImage = new ImageIcon(imagePath).getImage();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            // Desenha a imagem de fundo
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            return new Dimension(1920, 1080); // Define o tamanho preferencial do painel
+        }
+    }
+}

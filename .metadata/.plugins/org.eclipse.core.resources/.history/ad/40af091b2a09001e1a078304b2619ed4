@@ -1,0 +1,46 @@
+package view.util;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class TelaPrincipal extends JFrame {
+    public TelaPrincipal() {
+        setTitle("Multiple Panels Example");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        // Create the panels
+        JPanel topPanel = new JPanel();
+        JPanel centerPanel = new JPanel();
+        JPanel bottomPanel = new JPanel();
+
+        // Set the layout manager for each panel
+        topPanel.setLayout(new FlowLayout());
+        centerPanel.setLayout(new GridLayout(2, 2));
+        bottomPanel.setLayout(new BorderLayout());
+
+        // Add components to each panel
+        topPanel.add(new JLabel("Top Panel"));
+
+        centerPanel.add(new JButton("Button 1"));
+        centerPanel.add(new JButton("Button 2"));
+        centerPanel.add(new JButton("Button 3"));
+        centerPanel.add(new JButton("Button 4"));
+
+        bottomPanel.add(new JLabel("Bottom Panel"), BorderLayout.CENTER);
+
+        // Add the panels to the main frame
+        add(topPanel, BorderLayout.NORTH);
+        add(centerPanel, BorderLayout.CENTER);
+        add(bottomPanel, BorderLayout.SOUTH);
+
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new TelaPrincipal());
+    }
+}
+

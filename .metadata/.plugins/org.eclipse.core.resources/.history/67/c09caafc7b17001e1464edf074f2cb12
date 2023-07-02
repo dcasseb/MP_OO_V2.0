@@ -1,0 +1,94 @@
+package controller.util;
+
+import java.util.ArrayList;
+import model.util.Patrimonio;
+import model.util.Filial;
+import model.util.Imovel;
+import model.util.Movel;
+
+public class Database {
+    private ArrayList<Patrimonio> patrimonios;
+    private ArrayList<Filial> filiais;
+
+    public Database() {
+    	patrimonios = new ArrayList<>();
+        filiais = new ArrayList<>();
+    }
+
+    public void adicionarPatrimonio(Patrimonio patrimonio) {
+        patrimonios.add(patrimonio);
+    }
+
+    public void adicionarPatrimonio(Patrimonio patrimonio, Filial filial) {
+        patrimonio.setFilial(filial);
+        patrimonios.add(patrimonio);
+    }
+
+    public void excluirPatrimonio(Patrimonio patrimonio) {
+        patrimonios.remove(patrimonio);
+    }
+
+    public void editarPatrimonio(Filial filial, String nomePatrimonio, String novoNome) {
+        Patrimonio patrimonio = buscarPatrimonio(filial, nomePatrimonio);
+        if (patrimonio != null) {
+            patrimonio.setNome(novoNome);
+        }
+    }
+
+    public ArrayList<Patrimonio> getPatrimonios() {
+        return patrimonios;
+    }
+
+    public void adicionarFilial(Filial filial) {
+        filiais.add(filial);
+    }
+
+    public void excluirFilial(Filial filial) {
+        filiais.remove(filial);
+        patrimonios.removeIf(patrimonio -> patrimonio.getFilial().equals(filial));
+    }
+
+    public ArrayList<Filial> getFiliais() {
+        return filiais;
+    }
+
+    public Patrimonio buscarPatrimonio(Filial filial, String nome) {
+        if (filial != null) {
+            for (Patrimonio patrimonio : patrimonios) {
+                if (patrimonio.getNome().equals(nome) && patrimonio.getFilial().equals(filial)) {
+                    return patrimonio;
+                }
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<Patrimonio> getPatrimonios(Filial filial) {
+        ArrayList<Patrimonio> patrimoniosFiltrados = new ArrayList<>();
+        for (Patrimonio patrimonio : patrimonios) {
+            if (patrimonio.getFilial().equals(filial)) {
+                patrimoniosFiltrados.add(patrimonio);
+            }
+        }
+        return patrimoniosFiltrados;
+    }
+
+    public String[] getNomesPatrimonios(Filial filial) {
+        ArrayList<String> nomesPatrimonios = new ArrayList<>();
+        for (Patrimonio patrimonio : patrimonios) {
+            if (patrimonio.getFilial().equals(filial)) {
+                nomesPatrimonios.add(patrimonio.getNome());
+            }
+        }
+        return nomesPatrimonios.toArray(new String[0]);
+    }
+
+    public Filial buscarFilial(String endereco) {
+        for (Filial filial : filiais) {
+            if (filial.getEndereco().equals(endereco)) {
+                return filial;
+            }
+        }
+        return null;
+    }
+}

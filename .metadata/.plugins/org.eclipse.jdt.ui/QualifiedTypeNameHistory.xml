@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="model.util.Patrimonio"/>
+    <fullyQualifiedTypeName name="view.util.TelaFilial"/>
+    <fullyQualifiedTypeName name="java.util.Collections"/>
+    <fullyQualifiedTypeName name="java.util.Comparator"/>
+    <fullyQualifiedTypeName name="model.util.Movel"/>
+    <fullyQualifiedTypeName name="view.util.TelaPatrimonio.BackgroundPanel"/>
+    <fullyQualifiedTypeName name="model.util.Escritorio"/>
+    <fullyQualifiedTypeName name="controller.util.Database"/>
+    <fullyQualifiedTypeName name="model.util.Imovel"/>
+    <fullyQualifiedTypeName name="view.util.TelaPatrimonio"/>
+    <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="model.util.Filial"/>
+    <fullyQualifiedTypeName name="java.io.Serializable"/>
+</qualifiedTypeNameHistroy>

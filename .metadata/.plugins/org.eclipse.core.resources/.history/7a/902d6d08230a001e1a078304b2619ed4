@@ -1,0 +1,34 @@
+package view.util;
+
+import java.awt.Graphics;
+import java.awt.Image;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+public class TelaPrincipal {
+	
+	public static void main(String[] args) {
+		
+		JFrame frame = new JFrame("Tela Principal");
+		frame.setSize(1920, 1080);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		JPanel panel = new JPanel() {
+			
+			public void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				g.fillRect(0,  0, getWidth(), 85);
+				
+				Image imagem = new ImageIcon("Users/darau/OneDrive/Documentos/OO/Imagens/Fundo_Stratton_OO.png").getImage();
+				g.drawImage(imagem, 0, 0, null);
+			}
+		};
+
+
+		
+	}
+
+}

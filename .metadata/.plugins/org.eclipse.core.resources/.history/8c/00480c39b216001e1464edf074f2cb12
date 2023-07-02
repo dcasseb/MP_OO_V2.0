@@ -1,0 +1,100 @@
+package model.util;
+
+import controller.util.Database;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class Filial {
+    private String endereco;
+    private int cnpj;
+    private ArrayList<Patrimonio> patrimonio;
+    private Database database; // Reference to the Database
+
+    public Filial() {
+        patrimonio = new ArrayList<>();
+        database = new Database(new ArrayList<>(), new ArrayList<>());
+    }
+
+    public Filial(String endereco, int cnpj, ArrayList<Patrimonio> patrimonio, Database database) {
+        this.endereco = endereco;
+        this.cnpj = cnpj;
+        this.patrimonio = new ArrayList<>();
+        if (patrimonio != null) {
+            this.patrimonio.addAll(patrimonio);
+        }
+        this.database = database;
+    }
+    
+    public String getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
+    }
+
+    public int getCnpj() {
+        return cnpj;
+    }
+
+    public void setCnpj(int cnpj) {
+        this.cnpj = cnpj;
+    }
+
+    public ArrayList<Patrimonio> getPatrimonio() {
+        return patrimonio;
+    }
+
+    public void setPatrimonio(ArrayList<Patrimonio> patrimonio) {
+        this.patrimonio = patrimonio;
+    }
+
+    @Override
+    public String toString() {
+        return "Filial [endereco=" + endereco + ", cnpj=" + cnpj + "]";
+    }
+
+    public void adicionarPatrimonio(Patrimonio novoPatrimonio) {
+        patrimonio.add(novoPatrimonio);
+        novoPatrimonio.setFilial(this); // Set the Filial for the Patrimonio object
+        database.adicionarPatrimonio(novoPatrimonio, this); // Pass the Filial object to the Database method
+    }
+
+    public void editarPatrimonio(String nomeAntigo, String novoNome) {
+        for (Patrimonio patrimonio : patrimonio) {
+            if (patrimonio.getNome().equals(nomeAntigo)) {
+                patrimonio.setNome(novoNome);
+                database.editarPatrimonio(this, nomeAntigo, novoNome);
+                break;
+            }
+        }
+    }
+
+    public Patrimonio buscarPatrimonio(String nome) {
+        for (Patrimonio patrimonio : patrimonio) {
+            if (patrimonio.getNome().equals(nome)) {
+                return patrimonio;
+            }
+        }
+        return null;
+    }
+
+    public void excluirPatrimonio(String nome) {
+        for (Iterator<Patrimonio> iterator = patrimonio.iterator(); iterator.hasNext();) {
+            Patrimonio patrimonioItem = iterator.next();
+            if (patrimonioItem.getNome().equals(nome)) {
+                iterator.remove();
+                database.excluirPatrimonio(patrimonioItem);
+                break;
+            }
+        }
+    }
+
+    public String[] getNomesPatrimonios() {
+        String[] nomes = new String[patrimonio.size()];
+        for (int i = 0; i < patrimonio.size(); i++) {
+            nomes[i] = patrimonio.get(i).getNome();
+        }
+        return nomes;
+    }
+}

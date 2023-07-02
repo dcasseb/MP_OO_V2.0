@@ -1,0 +1,151 @@
+package view.util;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import javax.swing.*;
+
+import model.util.Filial;
+import model.util.Patrimonio;
+import controller.util.Database;
+
+public class TelaFilial extends JFrame {
+    private ArrayList<Filial> filiais;
+    private Database database;
+    private JTextArea filialListArea; // Added list area
+    private TelaPatrimonio telaPatrimonio;
+    private TelaPrincipal telaPrincipal;
+
+    public TelaFilial(Database database, TelaPatrimonio telaPatrimonio, TelaPrincipal telaPrincipal) {
+        final ArrayList<Filial> filiais = new ArrayList<>();
+        this.database = database;
+        this.telaPatrimonio = telaPatrimonio; // Assign the instance of the TelaPatrimonio
+        this.telaPrincipal = telaPrincipal;
+
+        setTitle("Tela de Filiais");
+        setSize(1920, 1080);
+
+        filialListArea = new JTextArea();
+        filialListArea.setEditable(false); // To make it read-only
+        Font textAreaFont = new Font("Arial", Font.BOLD, 16);
+        filialListArea.setFont(textAreaFont);
+        Color backgroundColor = new Color(255, 255, 255);
+        filialListArea.setBackground(backgroundColor);
+
+        // Create the custom background panel with BorderLayout layout
+        BackgroundPanel backgroundPanel = new BackgroundPanel("Imagens/telaSecundaria.png");
+        backgroundPanel.setLayout(new BorderLayout());
+        getContentPane().add(backgroundPanel, BorderLayout.CENTER);
+
+        // Create a button to return to TelaPrincipal
+        JButton backButton = new JButton();
+        backButton.setIcon(new ImageIcon("Imagens/iconeRetorno.png"));
+        backButton.setBorderPainted(false);
+        backButton.setContentAreaFilled(false);
+        backButton.setFocusPainted(false);
+        backButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Returning to TelaPrincipal");
+                telaPrincipal.setVisible(true); // Make the TelaPrincipal frame visible
+                setVisible(false); // Make the current frame (TelaFilial) invisible instead of disposing it
+            }
+        });
+
+        // Create a panel for the button in the top-right corner
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(backButton);
+
+        JPanel patrimonioPanel = new JPanel(new BorderLayout());
+        patrimonioPanel.setBackground(Color.BLACK);
+        patrimonioPanel.add(filialListArea, BorderLayout.CENTER);
+
+        JScrollPane scrollPane = new JScrollPane(patrimonioPanel);
+        scrollPane.setPreferredSize(new Dimension(400, 200));
+
+        // Add the button panel to the background panel
+        backgroundPanel.add(buttonPanel, BorderLayout.NORTH);
+
+        // Create the option buttons
+        JButton adicionarButton = new JButton(new ImageIcon("Imagens/Adicionar_button.png"));
+        JButton editarButton = new JButton(new ImageIcon("Imagens/Editar_button.png"));
+        JButton buscarButton = new JButton(new ImageIcon("Imagens/Buscar_button.png"));
+        JButton removerButton = new JButton(new ImageIcon("Imagens/Excluir_button.png"));
+        JButton listarButton = new JButton(new ImageIcon("Imagens/Listar_button.png"));
+
+        // Set the button sizes
+        adicionarButton.setPreferredSize(new Dimension(200, 60));
+        editarButton.setPreferredSize(new Dimension(200, 60));
+        buscarButton.setPreferredSize(new Dimension(200, 60));
+        removerButton.setPreferredSize(new Dimension(200, 60));
+        listarButton.setPreferredSize(new Dimension(200, 60));
+
+        ActionListener buttonListener = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Handle button actions
+            }
+        };
+
+        adicionarButton.addActionListener(buttonListener);
+        editarButton.addActionListener(buttonListener);
+        buscarButton.addActionListener(buttonListener);
+        removerButton.addActionListener(buttonListener);
+        listarButton.addActionListener(buttonListener);
+
+        // Centralize the buttons in the background panel
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setOpaque(false);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        centerPanel.add(adicionarButton, gbc);
+
+        gbc.gridx = 1;
+        centerPanel.add(editarButton, gbc);
+
+        gbc.gridx = 2;
+        centerPanel.add(buscarButton, gbc);
+
+        gbc.gridx = 3;
+        centerPanel.add(removerButton, gbc);
+
+        gbc.gridx = 4;
+        centerPanel.add(listarButton, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 5;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 10, 10, 10);
+        centerPanel.add(scrollPane, gbc);
+
+        // Add the center panel to the background panel
+        backgroundPanel.add(centerPanel, BorderLayout.CENTER);
+
+    }
+
+    class BackgroundPanel extends JPanel implements Serializable {
+        private static final long serialVersionUID = 1L;
+        private Image backgroundImage;
+
+        public BackgroundPanel(String imagePath) {
+            backgroundImage = new ImageIcon(imagePath).getImage();
+            this.setVisible(true);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            return new Dimension(1920, 1080);
+        }
+    }
+}

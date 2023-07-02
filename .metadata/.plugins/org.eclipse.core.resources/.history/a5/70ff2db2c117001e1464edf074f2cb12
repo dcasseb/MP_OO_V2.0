@@ -1,0 +1,344 @@
+package view.util;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import javax.swing.*;
+
+import controller.util.Database;
+import model.util.Filial;
+import model.util.Imovel;
+import model.util.Movel;
+import model.util.Patrimonio;
+
+public class TelaPatrimonio extends JFrame {
+    private String nome;
+    private double valor;
+    private int peso;
+	private String cor;
+	private int dimensao;
+	private int cep;
+	private double tamanho;
+    private Filial filial;
+    private ArrayList<Patrimonio> patrimonio;
+    private ArrayList<Filial> filiais;
+    private TelaPrincipal telaPrincipal;
+    private Database database;
+
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public double getValor() {
+        return valor;
+    }
+
+    public void setValor(double valor) {
+        this.valor = valor;
+    }
+
+    public Filial getFilial() {
+        return filial;
+    }
+
+    public void setFilial(Filial filial) {
+        this.filial = filial;
+    }
+
+    public void setFiliais(ArrayList<Filial> filiais) {
+        this.filiais = filiais;
+    }
+
+    public TelaPatrimonio(TelaPrincipal telaPrincipal, Database database, ArrayList<Filial> filiais) {
+        // Initialize the instance variables
+        this.database = database;
+        this.filiais = filiais;
+        this.telaPrincipal = telaPrincipal;
+        setTitle("Tela de Patrimônio");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1920, 1080);
+
+        this.patrimonio = new ArrayList<>();
+
+        JTextArea patrimonioListArea = new JTextArea();
+        patrimonioListArea.setEditable(false); // To make it read-only
+        Font textAreaFont = new Font("Arial", Font.BOLD, 16);
+        patrimonioListArea.setFont(textAreaFont);
+        Color backgroundColor = new Color(255, 255, 255);
+        patrimonioListArea.setBackground(backgroundColor);
+
+        // Cria o painel de fundo customizado com o layout BorderLayout
+        BackgroundPanel backgroundPanel = new BackgroundPanel("Imagens/telaSecundaria.png");
+        backgroundPanel.setLayout(new BorderLayout());
+        getContentPane().add(backgroundPanel, BorderLayout.CENTER);
+
+        // Cria um botao para retornar a TelaPrincipal
+        JButton backButton = new JButton();
+        backButton.setIcon(new ImageIcon("Imagens/iconeRetorno.png"));
+        backButton.setBorderPainted(false);
+        backButton.setContentAreaFilled(false);
+        backButton.setFocusPainted(false);
+
+        backButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                telaPrincipal.setVisible(true);
+                setVisible(false);
+            }
+        });
+
+        // Cria um painel para o botao no canto superior direito
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(backButton);
+
+        JPanel patrimonioPanel = new JPanel(new BorderLayout());
+        patrimonioPanel.setBackground(Color.BLACK);
+        patrimonioPanel.add(patrimonioListArea, BorderLayout.CENTER);
+
+        JScrollPane scrollPane = new JScrollPane(patrimonioPanel);
+        scrollPane.setPreferredSize(new Dimension(400, 200));
+
+        //Adiciona o painel de botoes ao painel de fundo
+        backgroundPanel.add(buttonPanel, BorderLayout.NORTH);
+
+        // Cria os botoes de opcoes
+        JButton adicionarButton = new JButton("Adicionar");
+        JButton editarButton = new JButton("Editar");
+        JButton buscarButton = new JButton("Buscar");
+        JButton removerButton = new JButton("Remover");
+        JButton listarButton = new JButton("Listar");
+        JButton sairButton = new JButton("Sair");
+
+        // Adiciona os botoes ao painel de botoes
+        JPanel optionsPanel = new JPanel();
+        optionsPanel.setOpaque(false);
+        optionsPanel.add(adicionarButton);
+        optionsPanel.add(editarButton);
+        optionsPanel.add(buscarButton);
+        optionsPanel.add(removerButton);
+        optionsPanel.add(listarButton);
+        optionsPanel.add(sairButton);
+
+        //Adiciona o painel de opcoes ao painel de fundo
+        backgroundPanel.add(optionsPanel, BorderLayout.SOUTH);
+        backgroundPanel.add(scrollPane, BorderLayout.CENTER);
+
+        // Configura o ActionListener para cada botao
+        ActionListener buttonListener = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == adicionarButton) {
+                    String nome = JOptionPane.showInputDialog("Informe o nome do patrimonio:");
+                    double valor = Double.parseDouble(JOptionPane.showInputDialog("Informe o valor do patrimonio:"));
+                    int selectedOption = JOptionPane.showOptionDialog(null, "Selecione o tipo de patrimonio:", "Tipo de Patrimonio", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Imovel", "Movel"}, null);
+
+                    if (selectedOption == 0) {
+                        String filialNome = JOptionPane.showInputDialog("Informe o nome da filial associada:");
+
+                        Filial filial = null;
+                        for (Filial f : filiais) {
+                            if (f.getEndereco().equalsIgnoreCase(filialNome)) {
+                                filial = f;
+                                break;
+                            }
+                        }
+
+                        if (filial != null) {
+                            Imovel imovel = new Imovel(nome, cep, dimensao, tamanho, valor);
+                            patrimonio.add(imovel);
+                            database.adicionarPatrimonio(imovel);
+                            JOptionPane.showMessageDialog(null, "Imovel adicionado com sucesso!");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Filial nao encontrada.");
+                        }
+                    } else if (selectedOption == 1) {
+                        String filialNome = JOptionPane.showInputDialog("Informe o nome da filial associada:");
+
+                        Filial filial = null;
+                        for (Filial f : filiais) {
+                            if (f.getEndereco().equalsIgnoreCase(filialNome)) {
+                                filial = f;
+                                break;
+                            }
+                        }
+
+                        if (filial != null) {
+                            Movel movel = new Movel(nome, valor, peso, cor, dimensao);
+                            patrimonio.add(movel);
+                            database.adicionarPatrimonio(movel);
+                            JOptionPane.showMessageDialog(null, "Movel adicionado com sucesso!");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Filial nao encontrada.");
+                        }
+                    }
+
+                } else if (e.getSource() == editarButton) {
+                	ArrayList<Filial> filiais = new ArrayList<>();
+                    System.out.println("Opção selecionada: Editar");
+                    String nomeAtual = JOptionPane.showInputDialog("Digite o nome atual do patrimônio:");
+                    String novoNome = JOptionPane.showInputDialog("Digite o novo nome do patrimônio:");
+
+                    for (Filial filial : filiais) {
+                        if (filial.existePatrimonio(nomeAtual)) {
+                            filial.editarPatrimonio(nomeAtual, novoNome);
+                            break;
+                        }
+                    }
+
+                } else if (e.getSource() == buscarButton) {
+                	ArrayList<Filial> filiais = database.getFiliais();
+                    System.out.println("Opção selecionada: Buscar");
+                    String searchName = JOptionPane.showInputDialog("Digite o nome do patrimônio a ser buscado:");
+
+                    for (Filial filial : filiais) {
+                        Patrimonio foundPatrimonio = filial.buscarPatrimonio(searchName);
+                        if (foundPatrimonio != null) {
+                            if (foundPatrimonio instanceof Movel) {
+                                Movel movel = (Movel) foundPatrimonio;
+                                JOptionPane.showMessageDialog(null,
+                                        "Patrimônio encontrado:\n" +
+                                                "Nome: " + movel.getNome() + "\n" +
+                                                "Código: " + movel.getCodigo() + "\n" +
+                                                "Valor: R$" + movel.getValor() + "\n" +
+                                                "Peso: " + movel.getPeso() + "Kg\n" +
+                                                "Cor: " + movel.getCor() + "\n" +
+                                                "Dimensão: " + movel.getDimensao() + "m3\n");
+                            } else if (foundPatrimonio instanceof Imovel) {
+                                Imovel imovel = (Imovel) foundPatrimonio;
+                                JOptionPane.showMessageDialog(null,
+                                        "Patrimônio encontrado:\n" +
+                                                "Nome: " + imovel.getNome() + "\n" +
+                                                "CEP: " + imovel.getCep() + "\n" +
+                                                "Tamanho: " + imovel.getTamanho() + "m2\n" +
+                                                "Valor: R$" + imovel.getValor());
+                            }
+                            break;
+                        }
+                    }
+                } else if (e.getSource() == removerButton) {
+                	ArrayList<Filial> filiais = new ArrayList<>();
+                    System.out.println("Opção selecionada: Remover");
+                    String nome = JOptionPane.showInputDialog("Digite o nome do patrimônio a ser removido:");
+
+                    for (Filial filial : filiais) {
+                        if (filial.existePatrimonio(nome)) {
+                            filial.excluirPatrimonio(nome);
+                            break;
+                        }
+                    }
+                } else if (e.getSource() == listarButton) {
+                    ArrayList<Filial> filiais = database.getFiliais();
+                    StringBuilder patrimonioList = new StringBuilder();
+
+                    System.out.println("Number of filiais: " + filiais.size());
+
+                    for (Filial filial : filiais) {
+                        System.out.println("Filial: " + filial.getEndereco());
+                        ArrayList<Patrimonio> patrimonios = filial.getPatrimonio();
+                        patrimonioList.append("Filial: ").append(filial.getEndereco()).append("\n");
+
+                        if (patrimonios == null || patrimonios.isEmpty()) {
+                            patrimonioList.append("Nenhum patrimônio cadastrado.\n");
+                        } else {
+                            for (Patrimonio patrimonio : patrimonios) {
+                                if (patrimonio instanceof Movel) {
+                                    Movel movel = (Movel) patrimonio;
+                                    patrimonioList.append("Nome: ").append(movel.getNome()).append("\n");
+                                    patrimonioList.append("Código: ").append(movel.getCodigo()).append("\n");
+                                    patrimonioList.append("Valor: R$").append(movel.getValor()).append("\n");
+                                    patrimonioList.append("Peso: ").append(movel.getPeso()).append("Kg\n");
+                                    patrimonioList.append("Cor: ").append(movel.getCor()).append("\n");
+                                    patrimonioList.append("Dimensão: ").append(movel.getDimensao()).append("m3\n");
+                                    patrimonioList.append("\n");
+                                } else if (patrimonio instanceof Imovel) {
+                                    Imovel imovel = (Imovel) patrimonio;
+                                    patrimonioList.append("Nome: ").append(imovel.getNome()).append("\n");
+                                    patrimonioList.append("CEP: ").append(imovel.getCep()).append("\n");
+                                    patrimonioList.append("Tamanho: ").append(imovel.getTamanho()).append("m2\n");
+                                    patrimonioList.append("Valor: R$").append(imovel.getValor()).append("\n");
+                                    patrimonioList.append("\n");
+                                }
+                            }
+                        }
+                        patrimonioList.append("\n");
+                    }
+
+                    System.out.println("Patrimonio list:\n" + patrimonioList.toString());
+
+                    patrimonioListArea.setText(""); // Clear the text area before setting the new text
+                    patrimonioListArea.append(patrimonioList.toString()); // Append the new text to the JTextArea
+                }
+                else if (e.getSource() == sairButton)  {
+                	System.exit(0);
+                }
+
+
+            }
+        };
+
+     // Adiciona o ActionListener aos botoes
+        adicionarButton.addActionListener(buttonListener);
+        editarButton.addActionListener(buttonListener);
+        buscarButton.addActionListener(buttonListener);
+        removerButton.addActionListener(buttonListener);
+        listarButton.addActionListener(buttonListener);
+        sairButton.addActionListener(buttonListener);
+
+        // Centraliza os botoes no painel de fundo
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setOpaque(false);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        centerPanel.add(adicionarButton, gbc);
+
+        gbc.gridx = 1;
+        centerPanel.add(editarButton, gbc);
+
+        gbc.gridx = 2;
+        centerPanel.add(buscarButton, gbc);
+
+        gbc.gridx = 3;
+        centerPanel.add(removerButton, gbc);
+
+        gbc.gridx = 4;
+        centerPanel.add(listarButton, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 5;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 10, 10, 10);
+        centerPanel.add(scrollPane, gbc);
+
+        // Adiciona o painel central ao painel de fundo
+        backgroundPanel.add(centerPanel, BorderLayout.CENTER);
+
+    }
+
+    class BackgroundPanel extends JPanel {
+        private Image backgroundImage;
+
+        public BackgroundPanel(String imagePath) {
+            // Carrega a imagem de fundo
+            backgroundImage = new ImageIcon(imagePath).getImage();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            // Desenha a imagem de fundo
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
+    }
+}

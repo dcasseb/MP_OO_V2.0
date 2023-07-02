@@ -1,0 +1,102 @@
+package view.util;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+import model.util.Filial;
+import view.util.TelaPatrimonio.BackgroundPanel;
+
+public class TelaFilial extends JFrame {
+	
+	private Filial filial;
+
+    public TelaFilial() {
+        setTitle("Tela de Filiais");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1920, 1080);
+
+     // Cria o painel personalizado com imagem de fundo e layout BorderLayout
+        BackgroundPanel backgroundPanel = new BackgroundPanel("/C:/Users/darau/OneDrive/Documentos/OO/telaSecundaria.png/");
+        backgroundPanel.setLayout(new BorderLayout());
+        getContentPane().add(backgroundPanel, BorderLayout.CENTER);
+
+        // Cria um botão para voltar à TelaPrincipal
+        JButton backButton = new JButton();
+        backButton.setIcon(new ImageIcon("/C:/Users/darau/OneDrive/Documentos/OO/iconeRetorno.png/"));
+        backButton.setBorderPainted(false);
+        backButton.setContentAreaFilled(false);
+        backButton.setFocusPainted(false);
+        backButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                TelaPrincipal telaPrincipal = new TelaPrincipal();
+                telaPrincipal.setVisible(true);
+                dispose(); // Fecha a tela atual (TelaPatrimonio)
+            }
+        });
+
+        // Cria um painel para o botão no canto superior direito
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(backButton);
+
+        // Adiciona o painel de botão ao painel de fundo
+        backgroundPanel.add(buttonPanel, BorderLayout.NORTH);
+
+     // Cria a caixa de seleção
+        JComboBox<String> comboBox = new JComboBox<>(new String[] {"Adicionar", "Editar", "Remover"});
+        comboBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String escolha = (String) comboBox.getSelectedItem();
+                if (escolha.equals("Adicionar") || escolha.equals("Editar")) {
+                    JTextField textField = new JTextField();
+                    textField.setPreferredSize(new Dimension(200, 30));
+                    int option = JOptionPane.showOptionDialog(null, textField, "Digite o texto",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+                    if (option == JOptionPane.OK_OPTION) {
+                        String texto = textField.getText();
+                        // Comunique-se com a classe Filiais usando o texto fornecido
+                        filial.getEndereco();
+                    }
+                } else if (escolha.equals("Remover")) {
+                    // Lógica para remover um item da classe Filiais
+                    filial.getCnpj();
+                }
+            }
+        });
+
+        // Centraliza as caixas de opção no painel de fundo
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setOpaque(false);
+        centerPanel.add(comboBox);
+
+        // Adiciona o painel central ao painel de fundo
+        backgroundPanel.add(centerPanel, BorderLayout.CENTER);
+        
+
+    }
+
+    // Classe interna para o painel personalizado com a imagem de fundo
+    class BackgroundPanel extends JPanel {
+        private Image backgroundImage;
+
+        public BackgroundPanel(String imagePath) {
+            // Carrega a imagem de fundo
+            backgroundImage = new ImageIcon(imagePath).getImage();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            // Desenha a imagem de fundo
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            return new Dimension(1920, 1080); // Define o tamanho preferencial do painel
+        }
+    }
+}
